@@ -8,7 +8,15 @@ const SEPOLIA_RPC_URL: string = process.env.SEPOLIA_RPC_URL || "";
 const PRIVATE_KEY: string = process.env.PRIVATE_KEY || "";
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.28",
+  solidity: {
+    version: "0.8.28",
+    settings: {
+      optimizer: {
+        enabled: false,
+        runs: 200,
+      },
+    },
+  },
   networks: {
     sepolia: {
       url: SEPOLIA_RPC_URL,

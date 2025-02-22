@@ -10,5 +10,5 @@ npx hardhat test
 REPORT_GAS=true npx hardhat test
 npx hardhat node
 npx hardhat ignition deploy ./ignition/modules/PackageTraceability.ts --network sepolia
-PackageTraceabilityModule#PackageTraceability - 0x1751CDe175953C9a7c4A0c7625c97217368f343E
+PackageTraceabilityModule#PackageTraceability - 0x01157B9FbD2f38934594486A727d04250ec798C6
 ```
