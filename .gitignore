@@ -1,0 +1,19 @@
+# Dependencias de Node.js y variables de entorno
+node_modules/
+package-lock.json
+.env
+
+# Hardhat archivos generados automáticamente
+/cache/
+/artifacts/
+/ignition/deployments/
+/typechain/
+/typechain-types/
+
+# Cobertura de pruebas (usada por solidity-coverage)
+coverage/
+coverage.json
+
+# Configuración de IDEs
+.idea/
+.vscode/
