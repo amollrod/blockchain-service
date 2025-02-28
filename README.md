@@ -13,7 +13,7 @@ Lo primero que se necesita es crear el contrato. Para ello lo definiremos dentro
 pragma solidity ^0.8.28;
 
 contract PackageTraceability {
-    // implementación del contrato
+    // implementación del contrato aquí
 }
 ```
 
