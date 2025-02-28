@@ -23,7 +23,7 @@ const contractABI = JSON.parse(
 const contractAddress = process.env.CONTRACT_ADDRESS;
 const contract = new ethers.Contract(contractAddress, contractABI, wallet);
 
-// 📌 **1. Endpoint para obtener un paquete por ID**
+// **1. Endpoint para obtener un paquete por ID**
 app.get("/package/:id", async (req, res) => {
     try {
         const packageId = req.params.id;
@@ -41,7 +41,7 @@ app.get("/package/:id", async (req, res) => {
     }
 });
 
-// 📌 **2. Endpoint para registrar un paquete en la blockchain**
+// **2. Endpoint para registrar un paquete en la blockchain**
 app.post("/package", async (req, res) => {
     try {
         const { id, origin, destination } = req.body;
@@ -54,7 +54,7 @@ app.post("/package", async (req, res) => {
     }
 });
 
-// 📌 **3. Endpoint para actualizar el estado de un paquete**
+// **3. Endpoint para actualizar el estado de un paquete**
 app.put("/package/:id/status", async (req, res) => {
     try {
         const { status } = req.body;

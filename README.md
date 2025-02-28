@@ -121,3 +121,19 @@ Respuesta:
     "txHash": "0xae108fdcb5a3eae259a5b134f019b22695aa1e5faa8515d3f76eefea36061dc1"
 }
 ```
+
+
+## 3- Ejecutar con docker
+
+Si deseas usas Docker Compose, puedes construir y correr el contenedor con:
+
+```shell
+docker compose up --build
+```
+
+En caso de querer usar el Dockerfile:
+
+```shell
+docker build -t blockchain-api .
+docker run -p 3000:3000 --env-file .env blockchain-api
+```

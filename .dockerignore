@@ -1,0 +1,9 @@
+.idea
+artifacts/*
+!artifacts/contracts/PackageTraceability.sol/PackageTraceability.json
+cache
+ignition/deployments/*
+node_modules
+typechain-types
+.env
+.git
