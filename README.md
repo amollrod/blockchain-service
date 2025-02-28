@@ -51,7 +51,7 @@ npx hardhat test
 #  7 passing (370ms)
 ```
 
-### 1.3- Desplegar el contrato
+### 1.4- Desplegar el contrato
 
 Para desplegar el contrato en la `Sepolia testnet`, usaremos el comando:
 
