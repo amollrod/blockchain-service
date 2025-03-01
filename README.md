@@ -88,6 +88,9 @@ Esta sección establece lo necesario para poder interactuar con el smart contrac
 
 ```shell
 node server.js
+```
+Ejemplo de respuesta:
+```
 # API running on http://localhost:3000
 ```
 
