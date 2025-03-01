@@ -23,9 +23,12 @@ Para poder compilar los contratos dentro del directorio `/contracts` del proyect
 
 ```shell
 npx hardhat clean 
-npx hardhat compile 
-# Compiling...
-# Compiled 1 contract successfully
+npx hardhat compile
+```
+Ejemplo de respuesta:
+```
+Compiling...
+Compiled 1 contract successfully
 ```
 
 Esto debería de generar los directorios `/typechain-types`, `/cache` y `/cache`
@@ -35,6 +38,10 @@ Esto debería de generar los directorios `/typechain-types`, `/cache` y `/cache`
 Si queremos probar el contrato, podemos hacerlo mediante el comando de prueba de hardhat. Para ello previamente necesitamos haber creado un fichero de test dentro del directorio `/test`  
 
 ```shell
+npx hardhat test
+```
+Ejemplo de respuesta:
+```
 npx hardhat test
 #  PackageTraceability
 #    Deployment
@@ -57,7 +64,22 @@ Para desplegar el contrato en la `Sepolia testnet`, usaremos el comando:
 
 ```shell
 npx hardhat ignition deploy ./ignition/modules/PackageTraceability.ts --network sepolia
-# PackageTraceabilityModule#PackageTraceability - 0x01157B9FbD2f38934594486A727d04250ec798C6
+```
+Ejemplo de respuesta:
+```
+√ Confirm deploy to network sepolia (11155111)? ... yes
+Hardhat Ignition 🚀
+
+Deploying [ PackageTraceabilityModule ]
+
+Batch #1
+  Executed PackageTraceabilityModule#PackageTraceability
+
+[ PackageTraceabilityModule ] successfully deployed 🚀
+
+Deployed Addresses
+
+PackageTraceabilityModule#PackageTraceability - 0x63e70f531656c6fa54554beB742958780514CdAA
 ```
 
 ## 2- Interacción con el smart contract
@@ -81,11 +103,40 @@ curl -X GET http://localhost:3000/package/1
 Respuesta:
 ```json
 {
-  "id":"1",
-  "origin":"Madrid",
-  "destination":"Barcelona",
-  "status":"Creado",
-  "timestamp":"1740694668"
+  "id": "1",
+  "origin": "Madrid",
+  "destination": "Barcelona"
+}
+```
+
+### Consultar historial de un paquete
+
+Petición:
+```shell
+curl -X GET http://localhost:3000/package/1/history
+```
+
+Respuesta:
+```json
+{
+  "id": "1",
+  "history": [
+    {
+      "status": "CREATED",
+      "location": "Madrid",
+      "timestamp": "1740694668"
+    },
+    {
+      "status": "IN_TRANSIT",
+      "location": "Zaragoza",
+      "timestamp": "1740701000"
+    },
+    {
+      "status": "DELIVERED",
+      "location": "Barcelona",
+      "timestamp": "1740710000"
+    }
+  ]
 }
 ```
 
@@ -99,29 +150,28 @@ curl -X POST http://localhost:3000/package \
 ```
 Respuesta:
 ```json
- {
-    "message": "Package created successfully",
-    "txHash": "0xd23707d91f8cf724fc19e94b3b07d3b31b2c8e801bad6bcd45d290de7d5dc8f6"
- }
+{
+  "message": "Package created successfully",
+  "txHash": "0xd23707d91f8cf724fc19e94b3b07d3b31b2c8e801bad6bcd45d290de7d5dc8f6"
+}
 ```
 
-### Actualizar estado de un paquete
+### Actualizar estado y ubicación de un paquete
 
 Petición:
 ```shell
 curl -X PUT http://localhost:3000/package/1/status \
      -H "Content-Type: application/json" \
-     -d '{"status": "DELIVERED"}'
+     -d '{"status": "IN_TRANSIT", "location": "Zaragoza"}'
 ```
 
 Respuesta:
 ```json
 {
-    "message": "Package status updated",
-    "txHash": "0xae108fdcb5a3eae259a5b134f019b22695aa1e5faa8515d3f76eefea36061dc1"
+  "message": "Package status updated",
+  "txHash": "0xae108fdcb5a3eae259a5b134f019b22695aa1e5faa8515d3f76eefea36061dc1"
 }
 ```
-
 
 ## 3- Ejecutar con docker
 

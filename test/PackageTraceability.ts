@@ -6,10 +6,8 @@ import hre from "hardhat";
 describe("PackageTraceability", function () {
     async function deployPackageTraceabilityFixture() {
         const [owner, otherAccount] = await hre.ethers.getSigners();
-
         const PackageTraceability = await hre.ethers.getContractFactory("PackageTraceability");
         const contract = await PackageTraceability.deploy();
-
         return { contract, owner, otherAccount };
     }
 
@@ -24,24 +22,30 @@ describe("PackageTraceability", function () {
         it("Should create a package successfully", async function () {
             const { contract } = await loadFixture(deployPackageTraceabilityFixture);
             await expect(contract.createPackage(1, "Madrid", "Barcelona"))
-                .to.emit(contract, "PackageUpdated")
-                .withArgs(1, "Creado", anyValue);
+                .to.emit(contract, "PackageCreated")
+                .withArgs(1, "Madrid", "Barcelona", anyValue);
+
+            // Validar que el historial contiene la entrada inicial
+            const history = await contract.getPackageHistory(1);
+            expect(history.length).to.equal(1);
+            expect(history[0].status).to.equal("CREATED");
+            expect(history[0].location).to.equal("Madrid");
         });
 
         it("Should fail to create a duplicate package", async function () {
             const { contract } = await loadFixture(deployPackageTraceabilityFixture);
             await contract.createPackage(1, "Madrid", "Barcelona");
-            await expect(contract.createPackage(1, "Madrid", "Barcelona")).to.be.revertedWith("El paquete ya existe");
+            await expect(contract.createPackage(1, "Madrid", "Barcelona"))
+                .to.be.revertedWith("El paquete ya existe");
         });
 
         it("Should retrieve package details", async function () {
             const { contract } = await loadFixture(deployPackageTraceabilityFixture);
             await contract.createPackage(1, "Madrid", "Barcelona");
             const packageInfo = await contract.getPackage(1);
-            expect(packageInfo.id).to.equal(1);
-            expect(packageInfo.origin).to.equal("Madrid");
-            expect(packageInfo.destination).to.equal("Barcelona");
-            expect(packageInfo.status).to.equal("Creado");
+            expect(packageInfo[0]).to.equal(1);
+            expect(packageInfo[1]).to.equal("Madrid");
+            expect(packageInfo[2]).to.equal("Barcelona");
         });
 
         it("Should fail to retrieve a non-existent package", async function () {
@@ -52,14 +56,39 @@ describe("PackageTraceability", function () {
         it("Should update package status successfully", async function () {
             const { contract } = await loadFixture(deployPackageTraceabilityFixture);
             await contract.createPackage(1, "Madrid", "Barcelona");
-            await expect(contract.updatePackageStatus(1, "En tránsito"))
+            await expect(contract.updatePackageStatus(1, "IN_TRANSIT", "Zaragoza"))
                 .to.emit(contract, "PackageUpdated")
-                .withArgs(1, "En tránsito", anyValue);
+                .withArgs(1, "IN_TRANSIT", "Zaragoza", anyValue);
+
+            // Validar que el historial se ha actualizado correctamente
+            const history = await contract.getPackageHistory(1);
+            expect(history.length).to.equal(2);
+            expect(history[1].status).to.equal("IN_TRANSIT");
+            expect(history[1].location).to.equal("Zaragoza");
         });
 
         it("Should fail to update a non-existent package", async function () {
             const { contract } = await loadFixture(deployPackageTraceabilityFixture);
-            await expect(contract.updatePackageStatus(99, "En tránsito")).to.be.revertedWith("El paquete no existe");
+            await expect(contract.updatePackageStatus(99, "IN_TRANSIT", "Zaragoza"))
+                .to.be.revertedWith("El paquete no existe");
+        });
+
+        it("Should retrieve package history", async function () {
+            const { contract } = await loadFixture(deployPackageTraceabilityFixture);
+            await contract.createPackage(1, "Madrid", "Barcelona");
+            await contract.updatePackageStatus(1, "IN_TRANSIT", "Zaragoza");
+            await contract.updatePackageStatus(1, "DELIVERED", "Barcelona");
+
+            const history = await contract.getPackageHistory(1);
+            expect(history.length).to.equal(3);
+            expect(history[0].status).to.equal("CREATED");
+            expect(history[1].status).to.equal("IN_TRANSIT");
+            expect(history[2].status).to.equal("DELIVERED");
+        });
+
+        it("Should fail to retrieve history for non-existent package", async function () {
+            const { contract } = await loadFixture(deployPackageTraceabilityFixture);
+            await expect(contract.getPackageHistory(99)).to.be.revertedWith("El paquete no existe");
         });
     });
 });

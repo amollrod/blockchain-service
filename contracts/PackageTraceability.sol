@@ -2,39 +2,54 @@
 pragma solidity ^0.8.28;
 
 contract PackageTraceability {
-    // Estructura que define la información del paquete
+    struct PackageEvent {
+        string status;
+        string location;
+        uint256 timestamp;
+    }
+
     struct Package {
         uint256 id;
         string origin;
         string destination;
-        string status;
-        uint256 timestamp;
+        PackageEvent[] history;
     }
 
-    // Mapeo para almacenar la información de cada paquete
-    mapping(uint256 => Package) public packages;
+    mapping(uint256 => Package) private packages;
 
-    // Evento que se emite cuando se crea o actualiza un paquete
-    event PackageUpdated(uint256 id, string status, uint256 timestamp);
+    event PackageCreated(uint256 id, string origin, string destination, uint256 timestamp);
+    event PackageUpdated(uint256 id, string status, string location, uint256 timestamp);
 
-    // Función para crear el registro de un nuevo paquete
     function createPackage(uint256 _id, string memory _origin, string memory _destination) public {
-        require(packages[_id].timestamp == 0, "El paquete ya existe");
-        packages[_id] = Package(_id, _origin, _destination, "Creado", block.timestamp);
-        emit PackageUpdated(_id, "Creado", block.timestamp);
+        require(packages[_id].history.length == 0, "El paquete ya existe");
+
+        Package storage newPackage = packages[_id];
+        newPackage.id = _id;
+        newPackage.origin = _origin;
+        newPackage.destination = _destination;
+
+        newPackage.history.push(PackageEvent("CREATED", _origin, block.timestamp));
+
+        emit PackageCreated(_id, _origin, _destination, block.timestamp);
     }
 
-    // Función para actualizar el estado de un paquete existente
-    function updatePackageStatus(uint256 _id, string memory _status) public {
-        require(packages[_id].timestamp != 0, "El paquete no existe");
-        packages[_id].status = _status;
-        packages[_id].timestamp = block.timestamp;
-        emit PackageUpdated(_id, _status, block.timestamp);
+    function updatePackageStatus(uint256 _id, string memory _status, string memory _location) public {
+        require(packages[_id].history.length > 0, "El paquete no existe");
+
+        Package storage pkg = packages[_id];
+        pkg.history.push(PackageEvent(_status, _location, block.timestamp));
+
+        emit PackageUpdated(_id, _status, _location, block.timestamp);
     }
 
-    // Función para obtener la información de un paquete
-    function getPackage(uint256 _id) public view returns (Package memory) {
-        require(packages[_id].timestamp != 0, "El paquete no existe");
-        return packages[_id];
+    function getPackage(uint256 _id) public view returns (uint256, string memory, string memory) {
+        require(packages[_id].history.length > 0, "El paquete no existe");
+        Package storage pkg = packages[_id];
+        return (pkg.id, pkg.origin, pkg.destination);
+    }
+
+    function getPackageHistory(uint256 _id) public view returns (PackageEvent[] memory) {
+        require(packages[_id].history.length > 0, "El paquete no existe");
+        return packages[_id].history;
     }
 }
