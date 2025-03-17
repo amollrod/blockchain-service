@@ -31,7 +31,7 @@ Compiling...
 Compiled 1 contract successfully
 ```
 
-Esto debería de generar los directorios `/typechain-types`, `/cache` y `/cache`
+Esto debería de generar los directorios `/typechain-types`, `/artifacts` y `/cache`
 
 ### 1.3- Testear el contrato
 
@@ -45,7 +45,7 @@ Ejemplo de respuesta:
 npx hardhat test
 #  PackageTraceability
 #    Deployment
-#      √ Should deploy successfully (339ms)
+#      √ Should deploy successfully (308ms)
 #    Package Management
 #      √ Should create a package successfully
 #      √ Should fail to create a duplicate package
@@ -53,9 +53,10 @@ npx hardhat test
 #      √ Should fail to retrieve a non-existent package
 #      √ Should update package status successfully
 #      √ Should fail to update a non-existent package
+#      √ Should retrieve the full package history
+#      √ Should fail retrieving history of non-existent package
 #
-#
-#  7 passing (370ms)
+#  9 passing (356ms)
 ```
 
 ### 1.4- Desplegar el contrato
@@ -79,7 +80,7 @@ Batch #1
 
 Deployed Addresses
 
-PackageTraceabilityModule#PackageTraceability - 0x63e70f531656c6fa54554beB742958780514CdAA
+PackageTraceabilityModule#PackageTraceability - 0xD4bF1EFd1BCa9442b83284e53b6a054C849Cab27
 ```
 
 ## 2- Interacción con el smart contract

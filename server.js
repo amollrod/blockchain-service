@@ -37,7 +37,7 @@ app.get("/package/:id", async (req, res) => {
         const packageData = await contract.getPackage(packageId);
 
         res.json({
-            id: packageData[0].toString(),
+            id: packageData[0],
             origin: packageData[1],
             destination: packageData[2],
         });
