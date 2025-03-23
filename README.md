@@ -80,7 +80,7 @@ Batch #1
 
 Deployed Addresses
 
-PackageTraceabilityModule#PackageTraceability - 0xD4bF1EFd1BCa9442b83284e53b6a054C849Cab27
+PackageTraceabilityModule#PackageTraceability - 0xfFC217bC1d0c1558A8B97AF2cdFe7c190AB155A9
 ```
 
 ## 2- Interacción con el smart contract
