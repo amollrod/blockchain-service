@@ -51,8 +51,7 @@ contract PackageTraceability {
     }
 
     /// @notice Updates the ownership
-    function updateOwner(address newOwner) public {
-        require(msg.sender == owner, "Only the current owner can update ownership.");
+    function updateOwner(address newOwner) public onlyOwner {
         require(newOwner != address(0), "New owner cannot be the zero address.");
         owner = newOwner;
     }
