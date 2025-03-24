@@ -43,20 +43,36 @@ npx hardhat test
 Ejemplo de respuesta:
 ```
 npx hardhat test
-#  PackageTraceability
-#    Deployment
-#      √ Should deploy successfully (308ms)
-#    Package Management
-#      √ Should create a package successfully
-#      √ Should fail to create a duplicate package
-#      √ Should retrieve package details
-#      √ Should fail to retrieve a non-existent package
-#      √ Should update package status successfully
-#      √ Should fail to update a non-existent package
-#      √ Should retrieve the full package history
-#      √ Should fail retrieving history of non-existent package
-#
-#  9 passing (356ms)
+
+  PackageTraceability
+    Deployment
+      √ Should deploy successfully (308ms)
+    Access control
+      √ Should allow only backend to create packages
+      √ Should allow only backend to update package status
+    Create package
+      √ Should create a package successfully
+      √ Should have one history event immediately after creation
+      √ Should fail to create a duplicate package
+      √ Should fail to create if origin is empty
+      √ Should fail to create if destination is empty
+    Update package
+      √ Should update package status successfully
+      √ Should fail to update a non-existent package
+      √ Should fail to update status if status is empty
+      √ Should fail to update status if location is empty
+    Get package details
+      √ Should retrieve package details
+      √ Should fail to retrieve a non-existent package
+    Get history
+      √ Should retrieve the full package history
+      √ Should fail retrieving history of non-existent package
+    Get last status
+      √ Should retrieve the last status of a package
+      √ Should fail retrieving the last status of non-existent package
+      √ Should isolate history and details between different packages
+
+  19 passing (387ms)
 ```
 
 ### 1.4- Desplegar el contrato
@@ -80,7 +96,7 @@ Batch #1
 
 Deployed Addresses
 
-PackageTraceabilityModule#PackageTraceability - 0xfFC217bC1d0c1558A8B97AF2cdFe7c190AB155A9
+PackageTraceabilityModule#PackageTraceability - 0x8bE1fCdee10d9b0931eF41060Db7c3e8b2061032
 ```
 
 ## 2- Interacción con el smart contract
@@ -179,7 +195,7 @@ Respuesta:
 
 ## 3- Ejecutar con docker
 
-Si deseas usas Docker Compose, puedes construir y correr el contenedor con:
+Si deseas usar Docker Compose, puedes construir y correr el contenedor con:
 
 ```shell
 docker compose up --build

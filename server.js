@@ -39,7 +39,7 @@ const contract = new ethers.Contract(contractAddress, contractABI, wallet);
  */
 app.get("/package/:id", async (req, res) => {
     try {
-        const packageId = BigInt(req.params.id);
+        const packageId = req.params.id;
         log(`[GET] Consultando paquete ID: ${packageId}`);
 
         const packageData = await contract.getPackage(packageId);
@@ -74,6 +74,40 @@ app.get("/package/:id/history", async (req, res) => {
     } catch (error) {
         log(`[ERROR][HISTORY] ID: ${req.params.id} - ${error.message}`);
         res.status(500).json({ error: "Error fetching package history" });
+    }
+});
+
+/**
+ * Obtener el último estado del paquete
+ */
+app.get("/package/:id/last", async (req, res) => {
+    try {
+        const packageId = req.params.id;
+        log(`[GET/LAST] Último estado del paquete ID: ${packageId}`);
+
+        const [status, location, timestamp] = await contract.getPackageLastStatus(packageId);
+
+        res.json({
+            id: packageId,
+            status,
+            location,
+            timestamp: timestamp.toString(),
+        });
+    } catch (error) {
+        log(`[ERROR][LAST] ID: ${packageId} - ${error.message}`);
+        res.status(500).json({ error: "Error fetching last status" });
+    }
+});
+
+/**
+ * Ver el owner actual del contrato
+ */
+app.get("/owner", async (_, res) => {
+    try {
+        const currentOwner = await contract.owner();
+        res.json({ owner: currentOwner });
+    } catch (error) {
+        res.status(500).json({ error: "Error fetching owner" });
     }
 });
 
