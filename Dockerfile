@@ -7,6 +7,9 @@ RUN npm install
 
 COPY . .
 
+RUN npx hardhat clean
+RUN npx hardhat compile
+
 # Build time variables
 ARG SEPOLIA_RPC_URL
 ARG PRIVATE_KEY
