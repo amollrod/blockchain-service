@@ -1,14 +1,21 @@
-FROM node:22
+FROM node:18-alpine
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-
+COPY package*.json ./
 RUN npm install
 
 COPY . .
 
-RUN npx hardhat clean && npx hardhat compile
+# Build time variables
+ARG SEPOLIA_RPC_URL
+ARG PRIVATE_KEY
+ARG CONTRACT_ADDRESS
+
+# Execution time variables
+ENV SEPOLIA_RPC_URL=$SEPOLIA_RPC_URL
+ENV PRIVATE_KEY=$PRIVATE_KEY
+ENV CONTRACT_ADDRESS=$CONTRACT_ADDRESS
 
 EXPOSE 3000
 
