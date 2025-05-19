@@ -193,7 +193,10 @@ Respuesta:
 }
 ```
 
-## 3- Ejecutar con docker
+## 3- Ejecutar con Docker localmente
+
+> [!WARNING]  
+> Esto solo se puede realizar si ya se cuenta con el fichero .env; en caso contrario, revisar el apartado 4.
 
 Si deseas usar Docker Compose, puedes construir y correr el contenedor con:
 
@@ -207,3 +210,52 @@ En caso de querer usar el Dockerfile:
 docker build -t blockchain-api .
 docker run -p 3000:3000 --env-file .env blockchain-api
 ```
+
+## 4- Ejecutar con Docker usando GHCR
+
+Este proyecto incluye una imagen Docker precompilada y publicada en el [GitHub Container Registry](https://ghcr.io/). Dicha imagen contiene todo lo necesario para ejecutar el servicio sin configuración adicional. Está marcada como privada por motivos de seguridad, por lo que es necesario autenticarse para acceder.
+
+### 4.1 solicitar el token de acceso
+
+El propietario del repositorio ha generado un token de acceso para poder hacer un `read:packages`. Esto permitirá poder obtener acceso a la imagen privada del GitHub Container Registry. Póngase en contacto con el propietario, [amollrod@uoc.edu](mailto:amollrod@uoc.edu?subject=[GitHub]%20ACCESS%20TOKEN).
+
+### 4.2 - Iniciar sesión en ghcr.io
+
+Una vez tenemos el token de acceso, ejecuta el siguiente comando en la terminal (reemplaza YOUR_TOKEN por el real):
+
+```shell
+echo YOUR_TOKEN | docker login ghcr.io -u amollrod --password-stdin
+```
+
+Si la autenticación es correcta, verás un mensaje como:
+
+```
+Login Succeeded
+```
+
+### 4.3 - Descargar la imagen
+
+Con el login exitoso, ya podemos hacer pull de la imagen autocontenida:
+
+```shell
+docker pull ghcr.io/amollrod/blockchain-api:latest
+```
+
+Verás un mensaje como:
+
+```
+latest: Pulling from amollrod/blockchain-api
+Digest: sha256:9679b6a214b2cf330c0abf7d3e0d2ba40a69556d80f9ed061f53b45c02050591
+Status: Downloaded newer image for ghcr.io/amollrod/blockchain-api:latest
+ghcr.io/amollrod/blockchain-api:latest
+```
+
+### 4.4 - Ejecutar el contenedor
+
+Una vez descargada, puedes ejecutarla con:
+
+```shell
+docker run -p 3000:3000 ghcr.io/amollrod/blockchain-api:latest
+```
+
+Con todo ya levantado, podemos hacer las operaciones del apartado 2.
