@@ -1,34 +1,23 @@
+const { ethers } = require("ethers");
 const fs = require("fs");
 const path = require("path");
 
-if (fs.existsSync(path.join(__dirname, ".env"))) {
-    require("dotenv").config();
-}
-
-const { ethers } = require("ethers");
-
-let contractInstance = null;
-
-/**
- * Inicializa el contrato solo una vez (lazy load).
- * Usa variables de entorno ya definidas (por Docker o dotenv).
- */
 function getContract() {
-    if (contractInstance) return contractInstance;
+    const RPC_URL = process.env.SEPOLIA_RPC_URL;
+    const PRIVATE_KEY = process.env.PRIVATE_KEY;
+    const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
 
-    const provider = new ethers.JsonRpcProvider(process.env.SEPOLIA_RPC_URL);
-    const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+    if (!RPC_URL || !PRIVATE_KEY || !CONTRACT_ADDRESS) {
+        throw new Error("Faltan variables de entorno para configurar el contrato.");
+    }
 
-    const contractABI = JSON.parse(
-        fs.readFileSync(
-            path.join(__dirname, "artifacts/contracts/PackageTraceability.sol/PackageTraceability.json"),
-            "utf8"
-        )
-    ).abi;
+    const provider = new ethers.JsonRpcProvider(RPC_URL);
+    const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
 
-    const contractAddress = process.env.CONTRACT_ADDRESS;
-    contractInstance = new ethers.Contract(contractAddress, contractABI, wallet);
-    return contractInstance;
+    const abiPath = path.join(__dirname, "artifacts", "contracts", "PackageTraceability.sol", "PackageTraceability.json");
+    const abi = JSON.parse(fs.readFileSync(abiPath)).abi;
+
+    return new ethers.Contract(CONTRACT_ADDRESS, abi, wallet);
 }
 
 module.exports = getContract;
