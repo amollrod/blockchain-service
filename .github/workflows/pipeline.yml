@@ -16,3 +16,6 @@ jobs:
     needs: unit-tests
     if: github.ref == 'refs/heads/master'
     uses: ./.github/workflows/docker-publish.yml
+    permissions:
+      contents: read
+      packages: write
