@@ -1,15 +1,17 @@
-
-require("dotenv").config();
-const { ethers } = require("ethers");
 const fs = require("fs");
 const path = require("path");
+
+if (fs.existsSync(path.join(__dirname, ".env"))) {
+    require("dotenv").config();
+}
+
+const { ethers } = require("ethers");
 
 let contractInstance = null;
 
 /**
- * Inicializa y devuelve una instancia del contrato.
- * Este patrón asegura que las variables de entorno estén disponibles
- * en tiempo de ejecución y evita errores durante el build Docker.
+ * Inicializa el contrato solo una vez (lazy load).
+ * Usa variables de entorno ya definidas (por Docker o dotenv).
  */
 function getContract() {
     if (contractInstance) return contractInstance;
