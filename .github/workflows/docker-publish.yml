@@ -2,6 +2,13 @@ name: Build and Push Docker Image
 
 on:
   workflow_call:
+    secrets:
+      PRIVATE_KEY:
+        required: true
+      SEPOLIA_RPC_URL:
+        required: true
+      CONTRACT_ADDRESS:
+        required: true
 
 jobs:
   build-and-push:

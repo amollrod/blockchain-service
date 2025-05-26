@@ -16,6 +16,10 @@ jobs:
     needs: unit-tests
     if: github.ref == 'refs/heads/master'
     uses: ./.github/workflows/docker-publish.yml
+    secrets:
+      PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+      SEPOLIA_RPC_URL: ${{ secrets.SEPOLIA_RPC_URL }}
+      CONTRACT_ADDRESS: ${{ secrets.CONTRACT_ADDRESS }}
     permissions:
       contents: read
       packages: write
