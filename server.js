@@ -1,9 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const { ethers } = require("ethers");
-const fs = require("fs");
-const path = require("path");
+const contract = require("./contractClient");
 
 const app = express();
 app.use(express.json());
@@ -19,23 +17,7 @@ function log(message) {
 }
 
 /**
- * Configuración de Ethereum
- */
-const provider = new ethers.JsonRpcProvider(process.env.SEPOLIA_RPC_URL);
-const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
-
-/**
- * Cargar ABI y dirección del contrato
- */
-const contractABI = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "artifacts/contracts/PackageTraceability.sol/PackageTraceability.json"), "utf8")
-).abi;
-
-const contractAddress = process.env.CONTRACT_ADDRESS;
-const contract = new ethers.Contract(contractAddress, contractABI, wallet);
-
-/**
- * Obtener información de un paquete
+ * ENDPOINTS
  */
 app.get("/package/:id", async (req, res) => {
     try {
@@ -81,8 +63,9 @@ app.get("/package/:id/history", async (req, res) => {
  * Obtener el último estado del paquete
  */
 app.get("/package/:id/last", async (req, res) => {
+    const packageId = req.params.id;
+
     try {
-        const packageId = req.params.id;
         log(`[GET/LAST] Último estado del paquete ID: ${packageId}`);
 
         const [status, location, timestamp] = await contract.getPackageLastStatus(packageId);
@@ -162,8 +145,12 @@ app.put("/package/:id/status", async (req, res) => {
 });
 
 /**
- * Iniciar servidor
+ * Iniciar servidor o export para test
  */
-app.listen(PORT, () => {
-    log(`API Blockchain ejecutándose en http://localhost:${PORT}`);
-});
+if (require.main === module) {
+    app.listen(PORT, () => {
+        log(`API Blockchain ejecutándose en http://localhost:${PORT}`);
+    });
+} else {
+    module.exports = app;
+}
