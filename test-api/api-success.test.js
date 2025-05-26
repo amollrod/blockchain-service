@@ -1,27 +1,30 @@
-
 const request = require('supertest');
 const app = require('../server');
 
-jest.mock('../contractClient', () => ({
-    getPackage: jest.fn().mockResolvedValue(['1', 'Madrid', 'Barcelona']),
-    getPackageHistory: jest.fn().mockResolvedValue([
-        { status: 'CREATED', location: 'Madrid', timestamp: 1717000000 },
-        { status: 'IN_TRANSIT', location: 'Zaragoza', timestamp: 1717003600 },
-        { status: 'DELIVERED', location: 'Barcelona', timestamp: 1717010000 }
-    ]),
-    getPackageLastStatus: jest.fn().mockResolvedValue(['DELIVERED', 'Barcelona', 1717010000]),
-    owner: jest.fn().mockResolvedValue('0xMockOwnerAddress'),
-    createPackage: jest.fn().mockResolvedValue({
-        hash: '0xmockhashcreate',
-        wait: jest.fn().mockResolvedValue({})
-    }),
-    updatePackageStatus: jest.fn().mockResolvedValue({
-        hash: '0xmockhashupdate',
-        wait: jest.fn().mockResolvedValue({})
-    })
-}));
+jest.mock('../contractClient', () => {
+    const contractMock = {
+        getPackage: jest.fn().mockResolvedValue(['1', 'Madrid', 'Barcelona']),
+        getPackageHistory: jest.fn().mockResolvedValue([
+            { status: 'CREATED', location: 'Madrid', timestamp: 1717000000 },
+            { status: 'IN_TRANSIT', location: 'Zaragoza', timestamp: 1717003600 },
+            { status: 'DELIVERED', location: 'Barcelona', timestamp: 1717010000 }
+        ]),
+        getPackageLastStatus: jest.fn().mockResolvedValue(['DELIVERED', 'Barcelona', 1717010000]),
+        owner: jest.fn().mockResolvedValue('0xMockOwnerAddress'),
+        createPackage: jest.fn().mockResolvedValue({
+            hash: '0xmockhashcreate',
+            wait: jest.fn().mockResolvedValue({})
+        }),
+        updatePackageStatus: jest.fn().mockResolvedValue({
+            hash: '0xmockhashupdate',
+            wait: jest.fn().mockResolvedValue({})
+        })
+    };
+    return jest.fn(() => contractMock);
+});
 
-const contract = require('../contractClient');
+const getContract = require('../contractClient');
+const contract = getContract();
 
 describe('API Blockchain REST - Contract interactions', () => {
 

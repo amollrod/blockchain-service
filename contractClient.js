@@ -1,20 +1,32 @@
+
 require("dotenv").config();
 const { ethers } = require("ethers");
 const fs = require("fs");
 const path = require("path");
 
-const provider = new ethers.JsonRpcProvider(process.env.SEPOLIA_RPC_URL);
-const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+let contractInstance = null;
 
-const contractABI = JSON.parse(
-    fs.readFileSync(
-        path.join(__dirname, "artifacts/contracts/PackageTraceability.sol/PackageTraceability.json"),
-        "utf8"
-    )
-).abi;
+/**
+ * Inicializa y devuelve una instancia del contrato.
+ * Este patrón asegura que las variables de entorno estén disponibles
+ * en tiempo de ejecución y evita errores durante el build Docker.
+ */
+function getContract() {
+    if (contractInstance) return contractInstance;
 
-const contractAddress = process.env.CONTRACT_ADDRESS;
+    const provider = new ethers.JsonRpcProvider(process.env.SEPOLIA_RPC_URL);
+    const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
-const contract = new ethers.Contract(contractAddress, contractABI, wallet);
+    const contractABI = JSON.parse(
+        fs.readFileSync(
+            path.join(__dirname, "artifacts/contracts/PackageTraceability.sol/PackageTraceability.json"),
+            "utf8"
+        )
+    ).abi;
 
-module.exports = contract;
+    const contractAddress = process.env.CONTRACT_ADDRESS;
+    contractInstance = new ethers.Contract(contractAddress, contractABI, wallet);
+    return contractInstance;
+}
+
+module.exports = getContract;

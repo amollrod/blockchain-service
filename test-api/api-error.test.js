@@ -1,17 +1,17 @@
-
 const request = require('supertest');
 const app = require('../server');
 
-jest.mock('../contractClient', () => ({
-    getPackage: jest.fn().mockRejectedValue(new Error("Contract failure")),
-    getPackageHistory: jest.fn().mockRejectedValue(new Error("Contract failure")),
-    getPackageLastStatus: jest.fn().mockRejectedValue(new Error("Contract failure")),
-    owner: jest.fn().mockRejectedValue(new Error("Contract failure")),
-    createPackage: jest.fn().mockRejectedValue(new Error("Contract failure")),
-    updatePackageStatus: jest.fn().mockRejectedValue(new Error("Contract failure"))
-}));
-
-const contract = require('../contractClient');
+jest.mock('../contractClient', () => {
+    const contractMock = {
+        getPackage: jest.fn().mockRejectedValue(new Error("Contract failure")),
+        getPackageHistory: jest.fn().mockRejectedValue(new Error("Contract failure")),
+        getPackageLastStatus: jest.fn().mockRejectedValue(new Error("Contract failure")),
+        owner: jest.fn().mockRejectedValue(new Error("Contract failure")),
+        createPackage: jest.fn().mockRejectedValue(new Error("Contract failure")),
+        updatePackageStatus: jest.fn().mockRejectedValue(new Error("Contract failure"))
+    };
+    return jest.fn(() => contractMock);
+});
 
 describe('API Blockchain REST - Error handling tests', () => {
     it('GET /package/:id -> 500', async () => {

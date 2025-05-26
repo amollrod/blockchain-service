@@ -1,7 +1,8 @@
+
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const contract = require("./contractClient");
+const getContract = require("./contractClient");
 
 const app = express();
 app.use(express.json());
@@ -21,6 +22,7 @@ function log(message) {
  */
 app.get("/package/:id", async (req, res) => {
     try {
+        const contract = getContract();
         const packageId = req.params.id;
         log(`[GET] Consultando paquete ID: ${packageId}`);
 
@@ -42,6 +44,7 @@ app.get("/package/:id", async (req, res) => {
  */
 app.get("/package/:id/history", async (req, res) => {
     try {
+        const contract = getContract();
         const packageId = req.params.id;
         log(`[GET/HISTORY] Historial del paquete ID: ${packageId}`);
 
@@ -66,6 +69,7 @@ app.get("/package/:id/last", async (req, res) => {
     const packageId = req.params.id;
 
     try {
+        const contract = getContract();
         log(`[GET/LAST] Último estado del paquete ID: ${packageId}`);
 
         const [status, location, timestamp] = await contract.getPackageLastStatus(packageId);
@@ -87,6 +91,7 @@ app.get("/package/:id/last", async (req, res) => {
  */
 app.get("/owner", async (_, res) => {
     try {
+        const contract = getContract();
         const currentOwner = await contract.owner();
         res.json({ owner: currentOwner });
     } catch (error) {
@@ -99,6 +104,7 @@ app.get("/owner", async (_, res) => {
  */
 app.post("/package", async (req, res) => {
     try {
+        const contract = getContract();
         const { id, origin, destination } = req.body;
 
         log(`[CREATE] ID: ${id}, origen: ${origin}, destino: ${destination}`);
@@ -121,6 +127,7 @@ app.post("/package", async (req, res) => {
  */
 app.put("/package/:id/status", async (req, res) => {
     try {
+        const contract = getContract();
         const { status, location } = req.body;
         const packageId = req.params.id;
 
