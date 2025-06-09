@@ -1,5 +1,13 @@
 # Blockchain service
 
+[![Build](https://github.com/amollrod/blockchain-service/actions/workflows/pipeline.yml/badge.svg)](https://github.com/amollrod/blockchain-service/actions/workflows/pipeline.yml)
+[![License: GPLv3](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
+[![TFG Document License: CC BY-NC 3.0 + GNU FDL 1.3](https://img.shields.io/badge/TFG%20License-CC%20BY--NC%203.0%20%2B%20GNU%20FDL%201.3-blue)](https://creativecommons.org/licenses/by-nc/3.0/es/)
+
+El microservicio blockchain-service es el componente encargado de asegurar la inmutabilidad del historial de envíos mediante el uso de smart contracts desplegados en la red Ethereum Sepolia. Permite registrar y consultar eventos logísticos en la blockchain a través de una API REST construida con Node.js y Ethers.js, ofreciendo garantías criptográficas sobre el estado de cada paquete. Su despliegue y mantenimiento se gestiona mediante Hardhat, y su integración se realiza de forma transparente con el resto del sistema distribuido.
+
+![arquitecturaBlockchain.jpg](arquitecturaBlockchain.jpg)
+
 ## 1- Generación, compilado y despliegue del contrato
 
 Esta sección documenta el uso de hardhat para poder generar y acabar desplegando un smart contract en la `Sepolia testnet`.
@@ -259,3 +267,12 @@ docker run -p 3000:3000 ghcr.io/amollrod/blockchain-api:latest
 ```
 
 Con todo ya levantado, podemos hacer las operaciones del apartado 2.
+
+---
+
+## Licencias
+
+- Este repositorio está licenciado bajo los términos de la [GNU General Public License v3.0](./LICENSE)
+- La memoria del TFG está protegida bajo: [CC BY-NC 3.0 España](https://creativecommons.org/licenses/by-nc/3.0/es/) y [GNU Free Documentation License 1.3](https://www.gnu.org/licenses/fdl-1.3.html)
+
+Proyecto desarrollado como parte del TFG de **Alex Moll Rodríguez** para la **UOC** en 2025.
